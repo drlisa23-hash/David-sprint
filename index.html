@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101827">
+<meta name="description" content="David's sprint training planner for 60m, 100m and 200m goals.">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<title>David Sprint Coach</title>
+<style>
+:root{color-scheme:dark;--bg:#0d1523;--panel:#182337;--panel2:#202f45;--text:#f5f7fb;--muted:#a9b7ca;--accent:#8be0b0;--line:#30405a;--warn:#f2cf79}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}button,input,select{font:inherit}button{cursor:pointer;border:1px solid var(--line);border-radius:12px;padding:10px 13px;background:var(--panel2);color:var(--text);font-weight:700}button.primary{background:var(--accent);color:#102019;border-color:var(--accent)}button.active{border-color:var(--accent);background:#244737}.app{max-width:760px;margin:auto;padding:0 14px 96px}.top{padding:24px 4px 14px}.eyebrow{font-size:.76rem;color:var(--accent);letter-spacing:.13em;text-transform:uppercase;font-weight:800}h1{font-size:clamp(1.9rem,7vw,2.5rem);line-height:1.05;margin:7px 0}h2{font-size:1.2rem;margin:0 0 12px}h3{font-size:1rem;margin:0 0 6px}.muted{color:var(--muted)}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.stat,.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px}.stat strong{display:block;font-size:1.25rem;color:var(--accent)}.stat span{font-size:.78rem;color:var(--muted)}.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:12px 0 16px}.tabs button{padding:10px 2px;font-size:.82rem}.section{display:none}.section.active{display:block}.dayrow{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin:12px 0}.dayrow button{padding:9px 0;font-size:.78rem}.badge{display:inline-block;border-radius:99px;background:#263a4b;color:var(--accent);padding:4px 9px;font-size:.75rem;font-weight:800}.exercise{padding:12px 0;border-top:1px solid var(--line)}.exercise:first-of-type{border-top:0}.exercise label{display:flex;gap:10px;align-items:flex-start}.exercise input{width:20px;height:20px;margin-top:2px;accent-color:var(--accent)}.exercise strong{display:block}.dose{color:var(--accent);font-weight:750}.notice{background:#2d2a20;border-left:4px solid var(--warn);padding:12px;border-radius:9px;margin:10px 0}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.row>*{flex:1}.field{width:100%;background:#0f1a2a;border:1px solid var(--line);border-radius:10px;padding:11px;color:var(--text)}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.logitem{border-top:1px solid var(--line);padding:12px 0}.logitem:first-child{border-top:0}.small{font-size:.85rem}.timer{text-align:center;padding:16px}.timer-number{font-size:3rem;font-weight:850;font-variant-numeric:tabular-nums;margin:8px}.bottom{position:fixed;bottom:0;left:0;right:0;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:#0d1523ed;border-top:1px solid var(--line);backdrop-filter:blur(12px);display:flex;justify-content:center}.bottom button{width:min(100%,730px)}.empty{color:var(--muted);padding:12px 0}@media(max-width:420px){.stats{gap:5px}.stat{padding:10px}.stat strong{font-size:1.1rem}.stat span{font-size:.7rem}.card{padding:12px}.formgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+<div class="eyebrow">Personal sprint training</div>
+<h1>David Sprint Coach</h1>
+<div class="muted">Train smart. Sprint fast. Recover well.</div>
+<div class="stats">
+<div class="stat"><strong>7.46 s</strong><span>60 m PB · FAT</span></div>
+<div class="stat"><strong>12.00 s</strong><span>100 m PB</span></div>
+<div class="stat"><strong>24.80 s</strong><span>200 m PB</span></div>
+</div>
+</header>
+<nav class="tabs">
+<button class="active" data-tab="today">Today</button><button data-tab="progress">Progress</button><button data-tab="calendar">Calendar</button><button data-tab="timer">Rest timer</button>
+</nav>
+<section id="today" class="section active">
+<div class="card">
+<div class="row"><span id="kind" class="badge">TODAY</span><span id="dateLabel" class="muted small" style="text-align:right"></span></div>
+<h2 id="workoutTitle" style="margin-top:12px">Loading…</h2>
+<p class="muted" id="workoutIntro"></p>
+<div class="dayrow" id="dayButtons"></div>
+<div id="exercises"></div>
+<div class="row" style="margin-top:12px"><button id="resetChecks">Reset checkboxes</button><button class="primary" id="completeWorkout">Mark workout complete</button></div>
+<p id="completeMsg" class="muted small"></p>
+</div>
+<div class="notice"><strong>Safety first:</strong> You are 14. Get a qualified coach or knowledgeable adult to supervise loaded exercises. No max lifts, no training to failure, and never push through pain. Track sessions should follow your athletics coach's plan.</div>
+</section>
+<section id="progress" class="section">
+<div class="card">
+<h2>Log a performance</h2>
+<p class="muted small">Enter only reliable, comparable times. Note whether timing was FAT or hand-timed.</p>
+<form id="performanceForm">
+<div class="formgrid">
+<label class="small">Event<select class="field" id="event"><option>60 m</option><option>100 m</option><option>200 m</option><option>Long jump</option></select></label>
+<label class="small">Result<input class="field" id="result" type="number" step="0.01" min="0" placeholder="e.g. 7.46" required></label>
+<label class="small">Date<input class="field" id="resultDate" type="date" required></label>
+<label class="small">Timing / note<input class="field" id="timing" placeholder="FAT, meet, etc."></label>
+</div><button class="primary" style="width:100%;margin-top:12px">Save result</button>
+</form>
+<h2 style="margin-top:22px">Your results</h2><div id="resultsList"></div>
+</div>
+</section>
+<section id="calendar" class="section">
+<div class="card">
+<h2>Training calendar</h2>
+<p class="muted small">Completed workouts are saved on this device.</p>
+<div class="row"><button id="prevMonth">← Previous</button><h3 id="monthLabel" style="text-align:center"></h3><button id="nextMonth">Next →</button></div>
+<div id="calendarGrid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:14px"></div>
+<div id="calendarDetail" class="muted small" style="margin-top:14px"></div>
+</div>
+</section>
+<section id="timer" class="section">
+<div class="card timer">
+<h2>Rest timer</h2><p class="muted">Use between sets. Follow your coach's rest instructions.</p>
+<div class="timer-number" id="timerDisplay">01:30</div>
+<div class="row"><button data-seconds="30">30 sec</button><button data-seconds="60">60 sec</button><button data-seconds="90" class="active">90 sec</button><button data-seconds="180">3 min</button></div>
+<div class="row" style="margin-top:12px"><button class="primary" id="timerStart">Start</button><button id="timerPause">Pause</button><button id="timerReset">Reset</button></div>
+<p id="timerMsg" class="muted small"></p>
+</div>
+</section>
+</div>
+<div class="bottom"><button id="homeToday" class="primary">Show today's workout</button></div>
+<script>
+const plans=[
+{name:"Monday",short:"Mon",title:"Workout A — Strength foundation",kind:"GYM + COACHED TRACK",intro:"Only do this if it fits your track plan and you feel recovered.",items:[
+["Warm-up","5–8 minutes easy movement, dynamic mobility and practice reps."],
+["Goblet squat","3 × 8 · 10 kg kettlebell or manageable dumbbell. Controlled reps."],
+["Dumbbell Romanian deadlift","3 × 8 · Light weights; hinge at the hips and keep your back neutral."],
+["Split squat","2 × 8 each leg · Bodyweight first; add light weights only with good form."],
+["Pull-ups","3 × 3–8 · Stop before form breaks; use an easier variation if needed."],
+["Push-ups","3 × 8–15 · Keep a straight body; elevate hands if needed."],
+["Calf raises","2 × 12–15 · Smooth reps, no bouncing."],
+["Plank","2 × 30–45 sec · Stop when alignment breaks."]]},
+{name:"Tuesday",short:"Tue",title:"Track + recovery",kind:"NO GYM",intro:"Follow your coach's track session. No extra gym workout today.",items:[
+["Track session","Do your coach's planned session; don't add extra sprints just to feel tired."],
+["Recovery","Eat a proper meal, hydrate and aim for 8–10 hours of sleep."]]},
+{name:"Wednesday",short:"Wed",title:"Track + recovery",kind:"NO GYM",intro:"Keep today gym-free so you can recover.",items:[
+["Track session","Follow your coach's plan. Keep extra work out, especially on a hard day."],
+["Optional mobility","5–10 minutes of comfortable ankle, hip and hamstring mobility. No painful stretching."]]},
+{name:"Thursday",short:"Thu",title:"Workout B — Power + upper body",kind:"GYM + COACHED TRACK",intro:"Only do jumps if your coach approves, legs feel fresh, and track training isn't already high in plyometrics.",items:[
+["Warm-up","5–8 minutes easy movement and controlled practice reps."],
+["Standing broad jumps","3 × 3 quality jumps, full recovery, soft landings. Coach approval required."],
+["Reverse lunges","2 × 8 each leg · Bodyweight or light dumbbells."],
+["Dumbbell rows","3 × 8–12 · Keep torso steady."],
+["Dumbbell floor press","3 × 8–12 · Manageable weight and controlled reps."],
+["Glute bridges","2 × 12 · Avoid arching the lower back."],
+["Lateral raises","2 × 10–15 · Light weights; don't swing."],
+["Dead bugs","2 × 8 each side · Keep trunk controlled."]]},
+{name:"Friday",short:"Fri",title:"Track + recovery",kind:"NO GYM",intro:"No gym today. Let your body adapt to training.",items:[
+["Track session","Follow the planned session. Don't add extra starts or conditioning without asking."],
+["Check-in","Tell your coach if pain or unusual fatigue is building."]]},
+{name:"Saturday",short:"Sat",title:"Track as coached; no gym",kind:"NO GYM",intro:"No gym session. Recovery is part of training.",items:[
+["Track session","Do only the session your coach prescribed."],
+["Optional easy mobility","A few minutes of comfortable movement if it helps you feel better."]]},
+{name:"Sunday",short:"Sun",title:"Rest day",kind:"REST",intro:"Rest from formal training unless your coach specifically planned otherwise.",items:[
+["Recovery","Eat enough, hydrate and enjoy a relaxed day."],
+["Prepare","Pack equipment and protect your sleep for the coming week."]]}
+];
+const $=id=>document.getElementById(id);
+const keyDone="davidSprintDone",keyResults="davidSprintResults";
+let chosen=0, calendarDate=new Date(), selectedDate=null, timerRemaining=90, timerInterval=null;
+function localDate(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
+function dayIndex(d=new Date()){return d.getDay()===0?6:d.getDay()-1}
+function read(key,def){try{return JSON.parse(localStorage.getItem(key))??def}catch{return def}}
+function write(key,val){localStorage.setItem(key,JSON.stringify(val))}
+function switchTab(name){document.querySelectorAll(".tabs button").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===name));$("homeToday").style.display=name==="today"?"none":"block"}
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
+function renderWorkout(idx){
+ chosen=idx;let p=plans[idx];$("kind").textContent=p.kind;$("dateLabel").textContent=new Date().toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"});$("workoutTitle").textContent=p.title;$("workoutIntro").textContent=p.intro;
+ $("dayButtons").innerHTML="";plans.forEach((x,i)=>{let b=document.createElement("button");b.textContent=x.short;b.className=i===idx?"active":"";b.onclick=()=>renderWorkout(i);$("dayButtons").append(b)});
+ let done=read(keyDone,{}), date=localDate(), checks=done[date+"-"+idx]?.checks||[];
+ $("exercises").innerHTML="";p.items.forEach((item,i)=>{let div=document.createElement("div");div.className="exercise";let label=document.createElement("label"),cb=document.createElement("input"),span=document.createElement("span"),strong=document.createElement("strong"),desc=document.createElement("span");cb.type="checkbox";cb.checked=!!checks[i];cb.onchange=()=>{let all=read(keyDone,{}),k=localDate()+"-"+idx;if(!all[k])all[k]={checks:[],complete:false};all[k].checks[i]=cb.checked;write(keyDone,all)};strong.textContent=item[0];desc.textContent=item[1];span.append(strong,desc);label.append(cb,span);div.append(label);$("exercises").append(div)});
+ $("completeMsg").textContent=done[date+"-"+idx]?.complete?"Workout marked complete today.":"";
+}
+$("resetChecks").onclick=()=>{let all=read(keyDone,{});delete all[localDate()+"-"+chosen];write(keyDone,all);renderWorkout(chosen);$("completeMsg").textContent="Checkboxes reset."};
+$("completeWorkout").onclick=()=>{let all=read(keyDone,{}),k=localDate()+"-"+chosen,checks=[...$("exercises").querySelectorAll('input[type=checkbox]')].map(x=>x.checked);all[k]={checks,complete:true};write(keyDone,all);$("completeMsg").textContent="Saved as complete for today.";renderCalendar()};
+$("homeToday").onclick=()=>{switchTab("today");renderWorkout(dayIndex())};
+function results(){let r=read(keyResults,[]).sort((a,b)=>b.date.localeCompare(a.date));$("resultsList").innerHTML="";if(!r.length){$("resultsList").innerHTML='<div class="empty">No results saved yet.</div>';return}r.forEach((x,i)=>{let d=document.createElement("div");d.className="logitem";d.innerHTML=`<div class="row"><div><strong>${escapeHtml(x.event)} — ${escapeHtml(x.result)}</strong><div class="muted small">${escapeHtml(x.date)} · ${escapeHtml(x.timing||"No note")}</div></div><button data-i="${i}">Delete</button></div>`;d.querySelector("button").onclick=()=>{let all=read(keyResults,[]);all.splice(i,1);write(keyResults,all);results()};$("resultsList").append(d)})}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+$("resultDate").value=localDate();$("performanceForm").onsubmit=e=>{e.preventDefault();let r=read(keyResults,[]);r.push({event:$("event").value,result:$("result").value,date:$("resultDate").value,timing:$("timing").value});write(keyResults,r);$("result").value="";$("timing").value="";results()};
+function renderCalendar(){let y=calendarDate.getFullYear(),m=calendarDate.getMonth();$("monthLabel").textContent=calendarDate.toLocaleDateString(undefined,{month:"long",year:"numeric"});let first=new Date(y,m,1),start=(first.getDay()+6)%7,daysIn=new Date(y,m+1,0).getDate(),done=read(keyDone,{});$("calendarGrid").innerHTML="";["M","T","W","T","F","S","S"].forEach(x=>{let s=document.createElement("div");s.textContent=x;s.style.textAlign="center";s.className="muted small";$("calendarGrid").append(s)});for(let i=0;i<start;i++)$("calendarGrid").append(document.createElement("div"));for(let n=1;n<=daysIn;n++){let date=`${y}-${String(m+1).padStart(2,"0")}-${String(n).padStart(2,"0")}`,b=document.createElement("button");b.textContent=n;b.style.padding="9px 0";b.style.position="relative";let completed=Object.keys(done).some(k=>k.startsWith(date+"-")&&done[k].complete);if(completed)b.style.borderColor="var(--accent)";if(date===localDate())b.style.background="#263a4b";b.onclick=()=>{$("calendarDetail").textContent=date+": "+(completed?"workout completed":"no completed workout recorded");};$("calendarGrid").append(b)}}
+$("prevMonth").onclick=()=>{calendarDate=new Date(calendarDate.getFullYear(),calendarDate.getMonth()-1,1);renderCalendar()};$("nextMonth").onclick=()=>{calendarDate=new Date(calendarDate.getFullYear(),calendarDate.getMonth()+1,1);renderCalendar()};
+function showTimer(){let m=Math.floor(timerRemaining/60),s=timerRemaining%60;$("timerDisplay").textContent=String(m).padStart(2,"0")+":"+String(s).padStart(2,"0")}
+document.querySelectorAll("[data-seconds]").forEach(b=>b.onclick=()=>{clearInterval(timerInterval);timerInterval=null;timerRemaining=Number(b.dataset.seconds);document.querySelectorAll("[data-seconds]").forEach(x=>x.classList.toggle("active",x===b));$("timerMsg").textContent="";showTimer()});
+$("timerStart").onclick=()=>{if(timerInterval)return;timerInterval=setInterval(()=>{if(timerRemaining>0){timerRemaining--;showTimer()}else{clearInterval(timerInterval);timerInterval=null;$("timerMsg").textContent="Rest complete. Check how you feel before starting the next set."}},1000)};
+$("timerPause").onclick=()=>{clearInterval(timerInterval);timerInterval=null};$("timerReset").onclick=()=>{clearInterval(timerInterval);timerInterval=null;timerRemaining=90;showTimer();$("timerMsg").textContent=""};
+renderWorkout(dayIndex());results();renderCalendar();showTimer();
+if("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("service-worker.js").catch(()=>{});
+</script>
+</body>
+</html>
